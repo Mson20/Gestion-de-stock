@@ -1,0 +1,113 @@
+<div class="produit-list">
+
+  <div class="page-header">
+  <h1>Produits</h1>
+  <div style="display:flex; gap:.75rem">
+    <button class="btn-export" (click)="produitService.exportExcel()">
+      📥 Exporter Excel
+    </button>
+    <button class="btn-primary" (click)="ouvrirAjout()">+ Ajouter</button>
+  </div>
+</div>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <input
+      type="text" placeholder="Rechercher un produit..."
+      [(ngModel)]="search" (input)="onSearch()" />
+    <select [(ngModel)]="categorieFiltre" (change)="onSearch()">
+      <option value="">Toutes les catégories</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+  </div>
+
+  <!-- Tableau -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Catégorie</th>
+          <th>Fournisseur</th>
+          <th>Stock</th>
+          <th>Seuil</th>
+          <th>Prix</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of produits" [class]="getStatut(p)">
+          <td><strong>{{ p.nom }}</strong><br><small>{{ p.description }}</small></td>
+          <td>{{ p.categorie }}</td>
+          <td>{{ p.fournisseur || '—' }}</td>
+          <td><strong>{{ p.stock }}</strong></td>
+          <td>{{ p.seuilAlerte }}</td>
+          <td>{{ p.prix | currency:'EUR' }}</td>
+          <td>
+            <span class="badge" [class]="'badge-' + getStatut(p)">
+              {{ getStatut(p) === 'rupture' ? 'Rupture' :
+                 getStatut(p) === 'alerte' ? 'Alerte' : 'OK' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn-edit" (click)="ouvrirEdit(p)">✏️</button>
+            <button class="btn-delete" (click)="supprimer(p.id)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="fermerModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEdit ? 'Modifier le produit' : 'Nouveau produit' }}</h2>
+        <button (click)="fermerModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>Nom *</label>
+          <input type="text" [(ngModel)]="produitForm.nom" placeholder="Nom du produit" />
+        </div>
+        <div class="form-row">
+          <label>Description</label>
+          <input type="text" [(ngModel)]="produitForm.description" placeholder="Description" />
+        </div>
+        <div class="form-row">
+          <label>Catégorie *</label>
+          <select [(ngModel)]="produitForm.categorie">
+            <option value="">Choisir...</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Fournisseur</label>
+          <input type="text" [(ngModel)]="produitForm.fournisseur" placeholder="Fournisseur" />
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Stock *</label>
+            <input type="number" [(ngModel)]="produitForm.stock" min="0" />
+          </div>
+          <div class="form-row">
+            <label>Seuil alerte *</label>
+            <input type="number" [(ngModel)]="produitForm.seuilAlerte" min="0" />
+          </div>
+          <div class="form-row">
+            <label>Prix (€) *</label>
+            <input type="number" [(ngModel)]="produitForm.prix" min="0" step="0.01" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline" (click)="fermerModal()">Annuler</button>
+        <button class="btn-primary" (click)="sauvegarder()">
+          {{ isEdit ? 'Modifier' : 'Ajouter' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

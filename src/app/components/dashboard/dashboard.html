@@ -1,0 +1,58 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.totalProduits }}</div>
+        <div class="stat-label">Produits</div>
+      </div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.enAlerte }}</div>
+        <div class="stat-label">En alerte</div>
+      </div>
+    </div>
+    <div class="stat-card danger">
+      <div class="stat-icon">🚨</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.enRupture }}</div>
+        <div class="stat-label">En rupture</div>
+      </div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-icon">💰</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.valeurTotale | currency:'EUR':'symbol':'1.0-0' }}</div>
+        <div class="stat-label">Valeur stock</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2>⚠️ Produits en alerte ({{ alertes.length }})</h2>
+      <a routerLink="/produits" class="btn-link">Voir tous →</a>
+    </div>
+    <div class="alertes-list" *ngIf="alertes.length > 0; else noAlerte">
+      <div class="alerte-item" *ngFor="let p of alertes"
+           [class.rupture]="p.stock === 0">
+        <div class="alerte-nom">{{ p.nom }}</div>
+        <div class="alerte-cat">{{ p.categorie }}</div>
+        <div class="alerte-stock">
+          <span class="badge" [class.badge-danger]="p.stock === 0"
+                              [class.badge-warning]="p.stock > 0">
+            {{ p.stock === 0 ? 'Rupture' : p.stock + ' restants' }}
+          </span>
+        </div>
+        <div class="alerte-seuil">seuil : {{ p.seuilAlerte }}</div>
+      </div>
+    </div>
+    <ng-template #noAlerte>
+      <p class="empty">Aucun produit en alerte ✅</p>
+    </ng-template>
+  </div>
+</div>
