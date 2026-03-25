@@ -5,7 +5,7 @@ import { Produit, ProduitStats } from '../models/produit';
 
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
-  private apiUrl = 'http://localhost:5161/api/Produits';
+    private apiUrl = 'https://gestion-stock-api-dmns.onrender.com/api/Produits';
 
   constructor(private http: HttpClient) {}
 
